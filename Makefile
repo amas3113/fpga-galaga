@@ -1,4 +1,4 @@
-.PHONY: all generate sopc-syn map fit asm time power program clean
+.PHONY: all help doc generate sopc-syn map fit asm time power program clean
 
 PROJECT = fpga_galaga
 
@@ -13,6 +13,11 @@ help:
 	@echo "  generate		qsys-generate, quartus_{map,fit,asm}"
 	@echo "  program		quartus_pgm"
 	@echo "  clean"
+
+doc: doc/fpga_galaga.pdf
+
+doc/fpga_galaga.pdf:
+	latexmk -pdf -outdir=doc/ doc/fpga_galaga.tex
 
 generate: sopc-syn map fit asm
 
@@ -42,3 +47,4 @@ program:
 
 clean:
 	@rm -rf $(QUARTUS_GENERATED) $(QSYS_GENERATED)
+	@(cd doc/ && latexmk -C -quiet) > /dev/null

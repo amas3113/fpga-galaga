@@ -1,0 +1,121 @@
+\section{Module Descriptions}
+\subsection{Modules}
+
+\raggedright
+\begin{enumerate}
+  \item Module: \texttt{ADC\_FSM.sv}
+  \begin{itemize}
+    \item Inputs: \texttt{Reset, Clk}
+    \item Outputs: \texttt{[4:0] Channel}
+    \item Description: This FSM describes the process that allows one to sequentially read all the channels of the ADC qsys.
+    \item Purpose: Facilitates the cycling through of ADC channels.
+    The output of this FSM allows one to sequentially read through all five channels corresponding with the inputs on the shield.
+  \end{itemize}
+
+  \item Module: \texttt{Bullet\_FSM.sv}
+  \begin{itemize}
+    \item Inputs: \texttt{Reset, Clk, [12:0] rdata3, [12:0] rdata2, [1:0] B\_Hit}
+    \item Outputs: \texttt{[1:0] B\_Display}
+    \item Description: Takes user input (\texttt{rdata3, rdata2}) and hit detection to decide which state the bullets are in (none fired, bullet one fired, bullet two fired, both fired). Outputs which bullets to display.
+    \item Purpose: Used to make sure only two bullets are drawn on the screen at a time regardless of how many times a button is pressed in succession, and to handle next state conditions given the various inputs (i.e. what should happen if bullet two collides with an enemy before bullet one hits something).
+  \end{itemize}
+
+  \item Module: \texttt{Bullet.sv}
+  \begin{itemize}
+    \item Inputs: \texttt{\#(parameter BULLET\_COUNT = 2), Reset, frame\_clk, [1:0] B\_Display, [9:0] Init\_X, [9:0] Init\_Y}
+    \item Outputs: \texttt{[BULLET\_COUNT-1:0][9:0] Bullet\_X, Bullet\_Y}
+    \item Description: Takes input from the FSM and positions the bullet sprite accordingly (on the ship if not fired, moving vertically upward if fired as noted by \texttt{B\_Display}). Outputs the X,Y coordinates for each bullet to the color mapper.
+    \item Purpose: Handles bullet position based on the state of the \texttt{Bullet\_FSM}.
+  \end{itemize}
+
+  \item Module: \texttt{Enemy\_FSM.sv}
+  \begin{itemize}
+    \item Inputs: \texttt{Reset, Clk, pause} 
+    \item Outputs: \texttt{[9:0] X\_Motion, [9:0] Y\_Motion, [9:0] Addr}
+    \item Description: Describes the movement and specific sprite selection of the enemies.
+    \item Purpose: Allows for animation of the enemies through state-based sprite selection and movement patterns.
+  \end{itemize}
+\pagebreak
+
+
+    \item Module: \texttt{Enemy.sv}
+    \begin{itemize}
+        \item Inputs: \texttt{\#(parameter ENEMY\_COUNT = 2), Reset, frame\_clk, [9:0] X\_Motion, [9:0] Y\_Motion} 
+        \item Outputs: \texttt{[ENEMY\_COUNT-1:0][9:0] Enemy\_X, Enemy\_Y}
+        \item Description: Analogous to Lab 6.2's \texttt{Ball.sv}. Describes position and motion of enemy sprite.
+        \item Purpose: Used in conjunction with the color mapper and enemy FSM to properly draw and animate the enemies.
+    \end{itemize}
+    
+    \item Module: \texttt{font\_rom.sv}
+    \begin{itemize}
+        \item Inputs: \texttt{[10:0] addr} 
+        \item Outputs: \texttt{[7:0] data}
+        \item Description: A ROM containing a wide variety of numbers and letters. 
+        \item Purpose: Used to display the score text and score number.
+    \end{itemize}
+    
+    \item Module: \texttt{galaga\_sprite\_rom.sv}
+    \begin{itemize}
+        \item Inputs: \texttt{[9:0] addr} 
+        \item Outputs: \texttt{[63:0] data}
+        \item Description: A custom created ROM for galaga sprites.
+        \item Purpose: Used to display multiple sprites for the overall game.
+    \end{itemize}
+    
+    \item Module: \texttt{Hit\_Detect.sv}
+    \begin{itemize}
+        \item Inputs: \texttt{\#(parameter BULLET\_COUNT = 2, parameter ENEMY\_COUNT = 2); Clk; Reset; [BULLET\_COUNT-1:0][9:0] Bullet\_X, Bullet\_Y; [ENEMY\_COUNT-1:0][9:0] Enemy\_X, Enemy\_Y} 
+        \item Outputs: \texttt{[BULLET\_COUNT-1:0] B\_Hit, [ENEMY\_COUNT-1:0] E\_Hit}
+        \item Description: A module that detects when two objects of interest collide (using rectangular hitboxes).
+        \item Purpose: Checks to see if a bullet has hit an enemy or the top of the screen and outputs information on what object hits what other object.
+    \end{itemize}
+    
+    \item Module: \texttt{new\_color\_mapper.sv}
+    \begin{itemize}
+        \item Inputs: \texttt{[9:0] ShipX, ShipY, DrawX, DrawY; [12:0] rdata3; [1:0] B\_Display; [BULLET\_COUNT-1:0][9:0] Bullet\_X, Bullet\_Y; [ENEMY\_COUNT-1:0][9:0] Enemy\_X, Enemy\_Y; [ENEMY\_COUNT-1:0] E\_Hit, [15:0] E1\_1\_Addr} 
+        \item Outputs: \texttt{[7:0] Red, [7:0] Green, [7:0] Blue}
+        \item Description: Using X,Y coordinates of all sprites of interest in drawing to the screen, handles which RGB output to draw to each pixel.
+        \item Purpose: High level module that allows for drawing borders, the player ship, the enemy, bullets, etc.
+    \end{itemize}
+\pagebreak
+    \item Module: \texttt{PC\_Ship.sv}
+    \begin{itemize}
+        \item Inputs: \texttt{Reset, frame\_clk, [12:0] vol} 
+        \item Outputs: \texttt{[9:0] PC\_ShipX, [9:0] PC\_ShipY, [9:0] PC\_ShipS}
+        \item Description: Adjusts the ship's coordinates according to user input.
+        \item Purpose: Joystick is used as the input in order to control the ship.
+    \end{itemize}
+    
+    \item Module: \texttt{VGA\_controller}
+    \begin{itemize}
+        \item Inputs: \texttt{Clk, Reset} 
+        \item Outputs: \texttt{hs, vs, pixel\_clk, blank, sync, [9:0] DrawX, [9:0] DrawY}
+        \item Description: Controls clocking, vertical sync, horizontal sync, and other priority signals relating to the VGA.
+        \item Purpose: Ensures sync signals are timed correctly and that blanking periods are not drawn over.
+    \end{itemize}
+    
+\end{enumerate}
+
+
+%\pagebreak
+\subsection{Platform Designer}
+
+\begin{enumerate}
+    \item \textbf{clk\_50:} Clock Source
+        
+        \quad This hardware block defines the clock signal. In this particular case, a default 50 MHz clock was used.
+    
+    \item \textbf{modular\_adc\_0:} Modular ADC core Intel FPGA IP
+    
+        \quad An IP core describing an ADC.
+    
+    \item \textbf{altpll\_sys:} ALTPLL Intel FPGA IP
+    
+        \quad Essentially, the PLL allows us to compensate for any clock skew that might occur due to the board layout.
+    
+    \item \textbf{clock\_bridge\_sys:} Clock Bridge
+    
+        \quad Default module included in the ADC\_RTL provided code.
+        
+\end{enumerate}
+

@@ -1,0 +1,64 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\usepackage[left=1in,right=1in]{geometry}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{\bigskipamount}
+
+\usepackage{
+  mathtools,
+  boldline,
+  multicol,
+  titlesec,
+  hyperref,
+  graphicx
+}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue,
+  filecolor=magenta,
+  urlcolor=cyan,
+}
+
+\setcounter{tocdepth}{3}
+\setcounter{secnumdepth}{3}
+
+\titleformat{\paragraph}
+{\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
+\titlespacing*{\paragraph}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+
+
+\begin{document}
+
+  \hypersetup{pageanchor=false}
+
+  \input{title.tex}
+
+  \hypersetup{pageanchor=true}
+
+  % Table of contents
+  \pagenumbering{roman}
+  \tableofcontents
+  \pagebreak
+
+  \pagenumbering{arabic}
+
+  \input{intro.tex}
+
+  \input{description.tex}
+  \pagebreak
+
+  \input{modules.tex}
+  \pagebreak
+
+  \input{features.tex}
+  \pagebreak
+
+  \input{drs.tex}
+
+  \input{conclusion.tex}
+
+\end{document}

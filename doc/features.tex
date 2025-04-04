@@ -1,0 +1,23 @@
+\section{Specific Features}
+\subsection{Joystick Shield with ADC}
+
+\quad Implemented the joystick shield and buttons using the provided ADC\_RTL qsys and provided code. Modified and implemented new code that allows one to sequentially read all 5 channels at a high clock speed that is essentially imperceptible to the human eye/sense.
+
+
+%\pagebreak
+\subsection{Sprites}
+\subsubsection{Sprite ROM}
+
+\quad A custom sprite ROM was created using Rishi's ECE 385 Helper Tool to convert the images to RAM. A PNG file was found online (credit for sprite to: https://www.spriters-resource.com/arcade/galaga/sheet/26482/) and was manipulated to utilize several specific sprites that were needed. While the current iteration of the project only displays one type of enemy, the sprite ROM includes multiple types of enemies that can be easily included by adjusting one or two values.
+
+
+
+\subsubsection{Sprite Animation}
+
+\quad An FSM was constructed to animate frames of sprites. The design of the FSM was done in an intentional manner such that it is easy to expand upon and add new frames to the animation. Similar to the Sprite ROM, there are multiple frames for each type of enemy that can be included in the future thanks to the modular design. In general, sprites were drawn in a fixed function fashion.
+
+
+\subsection{Hit Detection}
+
+\quad A module was implemented that can detect when two objects on the screen have collided. Specifically, this module checks to see if a player's bullet has hit an enemy, which then causes the enemy to despawn. All the enemies can be respawned with a push of the reset button.
+

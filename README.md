@@ -16,3 +16,5 @@ The project can be broken down into 13 submodules:
 
 ## Building
 fpga-galaga can be compiled with the provided ```Makefile```. Building was tested using Quartus Lite 18.1. A simple help prompt can be found via ```make help```.
+
+Authors: ajm22, js52
